@@ -6,16 +6,32 @@ const $send = $('#send');
 
 const socket = io.connect('http://localhost:8888');
 
-const append = (value) => {
-  const $item = $('<li class="list-group-item mb-3"></li>').text(value);
+let currentLocation;
+
+navigator.geolocation.getCurrentPosition(({ coords }) => {
+  currentLocation = {
+    longitude: coords.longitude,
+    latitude: coords.latitude,
+  };
+});
+
+const emitText = (text) => {
+  socket.emit('message', {
+    text,
+    location: currentLocation,
+  });
+}
+
+const append = (value, self = false) => {
+  const $item = $(`<li class="list-group-item mb-3 ${!self ? 'list-group-item-primary' : ''}"></li>`).text(value);
   $messages.append($item);
 };
 
 const send = () => {
   const value = $input.val();
   if (value) {
-    socket.emit('message', value);
-    append(value);
+    append(value, true);
+    emitText(value);
   }
   $input.val('');
   $input.focus();

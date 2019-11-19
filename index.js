@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const socket = require('socket.io');
 const { Server } = require('http');
@@ -28,4 +29,6 @@ io.on('connection', (connection) => {
   });
 });
 
-server.listen(8888, () => console.log('listening http://localhost:8888/'));
+const port = process.env.PORT;
+
+server.listen(port, () => console.log(`listening http://localhost:${port}/`));

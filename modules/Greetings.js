@@ -4,7 +4,7 @@ class Greetings {
   }
 
   async shouldRespond(message) {
-    return message.includes('hi');
+    return message.text.includes('hi');
   }
 
   async respond() {
