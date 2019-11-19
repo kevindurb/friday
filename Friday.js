@@ -10,7 +10,6 @@ class Friday {
   }
 
   async respond(message) {
-    console.log(message);
     try {
       const shoulds = (await Promise.all(
         this.resolvers.map(
