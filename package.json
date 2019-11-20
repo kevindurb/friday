@@ -24,6 +24,7 @@
     "express": "^4.17.1",
     "helmet": "^3.21.2",
     "node-fetch": "^2.6.0",
+    "node-nlp": "^4.0.0-rc.2",
     "nodemon": "^1.19.4",
     "socket.io": "^2.3.0"
   }

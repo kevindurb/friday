@@ -1,28 +1,53 @@
+const { NlpManager } = require('node-nlp');
+
+
 class Friday {
-  constructor() {
-    this.resolvers = [];
+  constructor(modules) {
+    this.manager = new NlpManager({ languages: ['en'] });
+    this.modules = this.buildModules(modules);
+    this.manager.train();
   }
 
-  register(module) {
-    if (!this.resolvers.includes(module)) {
-      this.resolvers.push(module);
-    }
+  buildModules(modules) {
+    return modules.reduce((acc, Mod) => {
+      const mod = new Mod();
+      const name = mod.constructor.name;
+      this.buildClassifiers(
+        name,
+        mod.getClassifiers(),
+      );
+      return {
+        ...acc,
+        [name]: mod,
+      };
+    }, {});
+  }
+
+  buildClassifiers(moduleName, classifiers) {
+    classifiers.forEach(([message, classifier]) => {
+      this.manager.addDocument(
+        'en',
+        message,
+        `${moduleName}.${classifier}`,
+      );
+    });
   }
 
   async respond(message) {
     try {
-      const shoulds = (await Promise.all(
-        this.resolvers.map(
-          resolver => resolver.shouldRespond(message)
-          .then((can) => can ? resolver : false),
-        ),
-      )).filter(r => r);
+      const {
+        intent,
+        entities,
+      } = await this.manager.process(message.text);
 
-      if (shoulds.length === 0) return;
+      if (intent === 'None') return 'Sorry I dont understand what you\'re saying...';
 
-      const responder = shoulds[0];
+      const [
+        module,
+        fn,
+      ] = intent.split('.');
 
-      return await responder.respond(message);
+      return await this.modules[module][fn](message, entities);
     } catch (e) {
       return e.message;
     }

@@ -1,14 +1,12 @@
 class Greetings {
-  constructor(friday) {
-    this.friday = friday;
+  getClassifiers() {
+    return [
+      ['hey friday', 'hey']
+    ]
   }
 
-  async shouldRespond(message) {
-    return message.text.includes('hi');
-  }
-
-  async respond() {
-    return 'hello world';
+  async hey() {
+    return 'Hey Kevin!';
   }
 }
 

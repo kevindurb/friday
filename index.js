@@ -5,11 +5,7 @@ const { Server } = require('http');
 const modules = require('./modules');
 const Friday = require('./Friday');
 
-const friday = new Friday();
-modules.forEach((Mod) => {
-  const mod = new Mod(friday);
-  friday.register(mod);
-});
+const friday = new Friday(modules);
 
 const app = express();
 
